@@ -6,6 +6,7 @@ import HowItWorksSection from '../../components/features/HowItWorksSection';
 import BenefitsSection from '../../components/features/BenefitsSection';
 import FeaturedPropertiesSection from '../../components/features/FeaturedPropertiesSection';
 import TestimonialsSection from '../../components/features/TestimonialsSection';
+import CtaSection from '../../components/features/CtaSection';
 
 const Home: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
         <BenefitsSection />
         <FeaturedPropertiesSection />
         <TestimonialsSection />
+        <CtaSection />
       </main>
     </div>
   );
