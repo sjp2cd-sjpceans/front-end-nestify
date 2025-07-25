@@ -52,5 +52,4 @@ coverage
 next-env.d.ts
 
 # Project specific
-.cursor/rules
 nestify-front-end-plan.md
