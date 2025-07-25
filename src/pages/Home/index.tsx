@@ -7,6 +7,7 @@ import BenefitsSection from '../../components/features/BenefitsSection';
 import FeaturedPropertiesSection from '../../components/features/FeaturedPropertiesSection';
 import TestimonialsSection from '../../components/features/TestimonialsSection';
 import CtaSection from '../../components/features/CtaSection';
+import Footer from '../../components/layout/Footer';
 
 const Home: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
         <TestimonialsSection />
         <CtaSection />
       </main>
+      <Footer />
     </div>
   );
 };
