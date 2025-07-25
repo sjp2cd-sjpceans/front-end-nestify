@@ -4,6 +4,7 @@ import HeroSection from '../../components/features/HeroSection';
 import FeaturesSection from '../../components/features/FeaturesSection';
 import HowItWorksSection from '../../components/features/HowItWorksSection';
 import BenefitsSection from '../../components/features/BenefitsSection';
+import FeaturedPropertiesSection from '../../components/features/FeaturedPropertiesSection';
 
 const Home: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const Home: React.FC = () => {
         <FeaturesSection />
         <HowItWorksSection />
         <BenefitsSection />
+        <FeaturedPropertiesSection />
       </main>
     </div>
   );
