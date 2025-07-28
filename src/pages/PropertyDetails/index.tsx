@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
-import { getPropertyById, type Property } from '../../services/property.service';
+import { getPropertyById, getProperties, type Property } from '../../services/property.service';
 
 const PropertyDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +12,7 @@ const PropertyDetails: React.FC = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [similarProperties, setSimilarProperties] = useState<Property[]>([]);
 
   // Mock additional images for the gallery
   const mockImages = [
@@ -34,6 +35,10 @@ const PropertyDetails: React.FC = () => {
         setLoading(true);
         const data = await getPropertyById(id);
         setProperty(data);
+        
+        // Fetch similar properties
+        const similar = await getProperties({ limit: 4 });
+        setSimilarProperties(similar.filter(p => p.id !== id).slice(0, 4));
       } catch (err) {
         setError('Failed to load property details');
         console.error('Error fetching property:', err);
@@ -410,6 +415,154 @@ const PropertyDetails: React.FC = () => {
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* Description Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 className="text-xl font-semibold text-[#002B5C] mb-4">Description</h2>
+            <div className="text-gray-700 leading-relaxed space-y-4">
+              <p>
+                Discover luxury living in this stunning modern estate, perfectly situated in the prestigious 
+                Westside neighborhood. This architectural masterpiece combines contemporary design with 
+                timeless elegance, offering an unparalleled living experience for the discerning buyer.
+              </p>
+              <p>
+                The open-concept floor plan seamlessly connects the gourmet kitchen, featuring top-of-the-line 
+                appliances and custom cabinetry, to the spacious living areas with soaring ceilings and floor-to-
+                ceiling windows that flood the space with natural light. The master suite is a true retreat, complete 
+                with a spa-like ensuite bathroom and walk-in closet.
+              </p>
+              <p>
+                Outside, the meticulously landscaped grounds feature a resort-style pool, outdoor kitchen, and 
+                multiple entertaining areas perfect for hosting gatherings. Additional highlights include a three-
+                car garage, smart home technology throughout, and premium finishes in every room.
+              </p>
+            </div>
+          </div>
+
+          {/* Location & Neighborhood Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-[#002B5C]">Location & Neighborhood</h2>
+              <a 
+                href="#" 
+                className="text-[#002B5C] hover:text-[#002B5C]/80 text-sm font-medium flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                View in Google Maps
+              </a>
+            </div>
+
+            {/* Map Placeholder */}
+            <div className="bg-gray-100 rounded-lg h-64 mb-6 flex items-center justify-center">
+              <div className="text-center">
+                <svg className="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div className="text-gray-600 font-medium">Interactive Map</div>
+                <div className="text-gray-500 text-sm">{property.address.street}, {property.address.city}</div>
+              </div>
+            </div>
+
+            {/* Nearby Amenities */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Elementary School</div>
+                  <div className="text-sm text-gray-600">0.5 mi</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2L3 7v11a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V7l-7-5zM6 16v-4h8v4H6z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Shopping Center</div>
+                  <div className="text-sm text-gray-600">1.2 mi</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V8z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Hospital</div>
+                  <div className="text-sm text-gray-600">2.1 mi</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Similar Properties Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-[#002B5C] mb-6">Similar Properties</h2>
+            
+            {similarProperties.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {similarProperties.map((similarProperty) => (
+                  <div 
+                    key={similarProperty.id}
+                    className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => navigate(`/property/${similarProperty.id}`)}
+                  >
+                    <img
+                      src={similarProperty.images?.[0]?.url || 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg'}
+                      alt={similarProperty.name}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">
+                        {similarProperty.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2 line-clamp-1">
+                        {similarProperty.address.street}, {similarProperty.address.city}
+                      </p>
+                      <p className="text-lg font-bold text-[#002B5C] mb-3">
+                        {formatPrice(similarProperty.discountPrice || similarProperty.price)}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                          </svg>
+                          <span>{similarProperty.beds}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <span>{similarProperty.baths}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                          </svg>
+                          <span>{similarProperty.size.toLocaleString()} sq ft</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No similar properties found.</p>
+              </div>
+            )}
           </div>
         </div>
       </main>
