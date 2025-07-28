@@ -6,6 +6,7 @@ import Authentication from './pages/Authentication';
 import Dashboard from './pages/Dashboard';
 import UserProfile from './pages/UserProfile';
 import PropertyListings from './pages/PropertyListings';
+import PropertyDetails from './pages/PropertyDetails';
 import AgentProfiles from './pages/AgentProfiles';
 import Recommendations from './pages/Recommendations';
 import SavedProperties from './pages/SavedProperties';
@@ -45,6 +46,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PropertyListings />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/property/:id" 
+              element={
+                <ProtectedRoute>
+                  <PropertyDetails />
                 </ProtectedRoute>
               } 
             />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Property } from '../../../services/property.service';
 
 interface PropertyCardProps {
@@ -20,6 +21,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const [saved, setSaved] = useState(isSaved);
+  const navigate = useNavigate();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-PH', {
@@ -142,7 +144,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
 
         {/* View Details Button */}
-        <button className="w-full bg-[#002B5C] text-white py-2 px-4 rounded-md hover:bg-[#002B5C]/90 transition-colors font-medium">
+        <button 
+          onClick={() => navigate(`/property/${property.id}`)}
+          className="w-full bg-[#002B5C] text-white py-2 px-4 rounded-md hover:bg-[#002B5C]/90 transition-colors font-medium"
+        >
           View Details
         </button>
       </div>
