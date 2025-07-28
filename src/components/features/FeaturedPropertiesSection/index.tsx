@@ -1,7 +1,7 @@
 import React from 'react';
-import featured1 from '../../../assets/images/featured1.png';
-import featured2 from '../../../assets/images/featured2.png';
-import featured3 from '../../../assets/images/featured3.png';
+import featured1 from '@nestify/assets/images/featured1.png';
+import featured2 from '@nestify/assets/images/featured2.png';
+import featured3 from '@nestify/assets/images/featured3.png';
 
 // Mock data for featured properties
 const featuredProperties = [

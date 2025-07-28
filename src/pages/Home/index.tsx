@@ -1,13 +1,13 @@
 import React from 'react';
-import Header from '../../components/layout/Header';
-import HeroSection from '../../components/features/HeroSection';
-import FeaturesSection from '../../components/features/FeaturesSection';
-import HowItWorksSection from '../../components/features/HowItWorksSection';
-import BenefitsSection from '../../components/features/BenefitsSection';
-import FeaturedPropertiesSection from '../../components/features/FeaturedPropertiesSection';
-import TestimonialsSection from '../../components/features/TestimonialsSection';
-import CtaSection from '../../components/features/CtaSection';
-import Footer from '../../components/layout/Footer';
+import Header from '@nestify/components/layout/Header';
+import HeroSection from '@nestify/components/features/HeroSection';
+import FeaturesSection from '@nestify/components/features/FeaturesSection';
+import HowItWorksSection from '@nestify/components/features/HowItWorksSection';
+import BenefitsSection from '@nestify/components/features/BenefitsSection';
+import FeaturedPropertiesSection from '@nestify/components/features/FeaturedPropertiesSection';
+import TestimonialsSection from '@nestify/components/features/TestimonialsSection';
+import CtaSection from '@nestify/components/features/CtaSection';
+import Footer from '@nestify/components/layout/Footer';
 
 const Home: React.FC = () => {
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../../components/layout/Header';
-import PropertyCard from '../../components/features/PropertyCard';
-import { getProperties, type Property } from '../../services/property.service';
+import Header from '@nestify/components/layout/Header';
+import PropertyCard from '@nestify/components/features/PropertyCard';
+import { getProperties, type Property } from '@nestify/services/property.service';
 
 interface FilterState {
   location: string;

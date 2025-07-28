@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Property } from '../../../services/property.service';
+import type { Property } from '@nestify/services/property.service';
 
 interface PropertyCardProps {
   property: Property;

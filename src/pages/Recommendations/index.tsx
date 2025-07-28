@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../../components/layout/Header';
+import Header from '@nestify/components/layout/Header';
 
 const Recommendations: React.FC = () => {
   return (

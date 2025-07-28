@@ -1,7 +1,7 @@
 import React from 'react';
-import april from '../../../assets/images/person/april.jpg';
-import mikko from '../../../assets/images/person/mikko.jpg';
-import kenzo from '../../../assets/images/person/kenzo.jpg';
+import april from '@nestify/assets/images/person/april.jpg';
+import mikko from '@nestify/assets/images/person/mikko.jpg';
+import kenzo from '@nestify/assets/images/person/kenzo.jpg';
 
 // Mock testimonial data
 const testimonials = [

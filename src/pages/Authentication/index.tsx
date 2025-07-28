@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { /*Link,*/ useLocation, useNavigate } from 'react-router-dom';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
-import { useAuth } from '../../context/AuthContext';
-import Header from '../../components/layout/Header';
-import loginBg from '../../assets/images/login-bg.png';
+import Input from '@nestify/components/common/Input';
+import Button from '@nestify/components/common/Button';
+import { useAuth } from '@nestify/context/AuthContext';
+import Header from '@nestify/components/layout/Header';
+import loginBg from '@nestify/assets/images/login-bg.png';
 
 const EmailIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

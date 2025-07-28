@@ -1,7 +1,7 @@
 import React from 'react';
-import kenzoImg from '../../../assets/images/developer/kenzo.jpg';
-import jayoImg from '../../../assets/images/developer/jayo.jpg';
-import mikkoImg from '../../../assets/images/developer/mikko.jpg';
+import kenzoImg from '@nestify/assets/images/developer/kenzo.jpg';
+import jayoImg from '@nestify/assets/images/developer/jayo.jpg';
+import mikkoImg from '@nestify/assets/images/developer/mikko.jpg';
 
 const Footer: React.FC = () => {
   return (

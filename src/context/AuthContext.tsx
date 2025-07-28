@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import * as authService from '../services/auth.service';
+import * as authService from '@nestify/services/auth.service';
 
 type UserRole = 'client' | 'agent' | null;
 

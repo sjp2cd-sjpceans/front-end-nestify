@@ -1,5 +1,5 @@
 import React from 'react';
-import heroBg from '../../../assets/images/hero-bg.png';
+import heroBg from '@nestify/assets/images/hero-bg.png';
 
 const HeroSection: React.FC = () => {
   return (
