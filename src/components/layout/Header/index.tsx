@@ -13,6 +13,22 @@ const Header: React.FC = () => {
   // Check if user is on landing page
   const isOnLandingPage = location.pathname === '/';
 
+  // Helper function to check if a link is active
+  const isActiveLink = (path: string) => {
+    if (path === '/' && isOnLandingPage) return true;
+    if (path === '/dashboard' && location.pathname === '/dashboard') return true;
+    if (path !== '/' && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
+  // Helper function to get link classes with active indicator
+  const getLinkClasses = (path: string) => {
+    const baseClasses = "text-[#002B5C] hover:text-[#002B5C]/80 transition-colors relative";
+    const activeClasses = "after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-0.5 after:bg-[#FFD700]";
+    
+    return isActiveLink(path) ? `${baseClasses} ${activeClasses}` : baseClasses;
+  };
+
   return (
     <header className="bg-white py-4 px-6 shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
@@ -24,27 +40,27 @@ const Header: React.FC = () => {
           {isAuthenticated ? (
             <>
               {isOnLandingPage ? (
-                <Link to="/dashboard" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                <Link to="/dashboard" className={getLinkClasses('/dashboard')}>
                   Dashboard
                 </Link>
               ) : (
-                <Link to="/" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                <Link to="/" className={getLinkClasses('/')}>
                   Home
                 </Link>
               )}
-              <Link to="/properties" className="text-[#002B5C] hover:text-[#002B5C]/80">
+              <Link to="/properties" className={getLinkClasses('/properties')}>
                 Property Listings
               </Link>
-              <Link to="/agents" className="text-[#002B5C] hover:text-[#002B5C]/80">
+              <Link to="/agents" className={getLinkClasses('/agents')}>
                 Agent/Broker Profiles
               </Link>
-              <Link to="/recommendations" className="text-[#002B5C] hover:text-[#002B5C]/80">
+              <Link to="/recommendations" className={getLinkClasses('/recommendations')}>
                 Recommendations
               </Link>
-              <Link to="/saved" className="text-[#002B5C] hover:text-[#002B5C]/80">
+              <Link to="/saved" className={getLinkClasses('/saved')}>
                 Saved Properties
               </Link>
-              <Link to="/messages" className="text-[#002B5C] hover:text-[#002B5C]/80">
+              <Link to="/messages" className={getLinkClasses('/messages')}>
                 Messages
               </Link>
               
@@ -74,6 +90,7 @@ const Header: React.FC = () => {
             <>
               <Link to="/" className="text-[#002B5C] hover:text-[#002B5C]/80">Home</Link>
               <Link to="/listings" className="text-[#002B5C] hover:text-[#002B5C]/80">Listings</Link>
+              <Link to="/agents" className="text-[#002B5C] hover:text-[#002B5C]/80">Agent/Broker Profiles</Link>
               <Link to="/auth" className="text-[#002B5C] hover:text-[#002B5C]/80">Login</Link>
               <Link 
                 to="/auth?tab=register" 

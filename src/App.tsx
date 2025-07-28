@@ -24,6 +24,10 @@ function App() {
             <Route path="/login" element={<Navigate to="/auth" replace />} />
             <Route path="/signup" element={<Navigate to="/auth?tab=register" replace />} />
             
+            {/* Public Routes - accessible to all users */}
+            <Route path="/listings" element={<PropertyListings />} />
+            <Route path="/agents" element={<AgentProfiles />} />
+            
             {/* Protected Routes */}
             <Route 
               path="/dashboard" 
