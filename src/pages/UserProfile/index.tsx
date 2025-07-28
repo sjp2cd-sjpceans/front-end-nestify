@@ -11,7 +11,7 @@ const UserProfile: React.FC = () => {
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchPreferences, setSearchPreferences] = useState({
+  const [searchPreferences/*, setSearchPreferences*/] = useState({
     location: 'Downtown',
     priceRange: '₱300,000 - ₱750,000',
     propertyType: 'Single Family',
