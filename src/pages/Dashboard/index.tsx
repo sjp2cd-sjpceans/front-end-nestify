@@ -4,134 +4,13 @@ import Header from '../../components/layout/Header';
 import PropertyCard from '../../components/features/PropertyCard';
 import { useAuth } from '../../context/AuthContext';
 import type { Property } from '../../services/property.service';
-
-// Mock data for now - will be replaced with API calls
-const mockSavedProperties: Property[] = [
-  {
-    id: '1',
-    name: 'Contemporary Townhouse',
-    description: 'Modern townhouse with great amenities',
-    price: 580000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 2100,
-    propertyType: 'Townhouse',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-      altText: 'Contemporary Townhouse',
-      isPrimary: true
-    }],
-    beds: 3,
-    baths: 2
-  },
-  {
-    id: '2',
-    name: 'Luxury City Condo',
-    description: 'Luxury condo in the heart of the city',
-    price: 650000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 1200,
-    propertyType: 'Condo',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-      altText: 'Luxury City Condo',
-      isPrimary: true
-    }],
-    beds: 2,
-    baths: 2
-  }
-];
-
-const mockRecommendations: Property[] = [
-  {
-    id: '3',
-    name: 'Elegant Family Home',
-    description: 'Perfect for growing families',
-    price: 695000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 2400,
-    propertyType: 'House',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-      altText: 'Elegant Family Home',
-      isPrimary: true
-    }],
-    beds: 4,
-    baths: 3
-  },
-  {
-    id: '4',
-    name: 'Cozy Cottage Style',
-    description: 'Charming cottage in quiet neighborhood',
-    price: 485000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 1800,
-    propertyType: 'Cottage',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-      altText: 'Cozy Cottage Style',
-      isPrimary: true
-    }],
-    beds: 3,
-    baths: 2
-  },
-  {
-    id: '5',
-    name: 'Modern Ranch Home',
-    description: 'Contemporary ranch with modern amenities',
-    price: 620000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 2200,
-    propertyType: 'Ranch',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-      altText: 'Modern Ranch Home',
-      isPrimary: true
-    }],
-    beds: 3,
-    baths: 2
-  }
-];
+import { getSavedProperties, getRecommendations, saveProperty, unsaveProperty } from '../../services/property.service';
 
 const mockMessages = [
   {
     id: 1,
     sender: 'Sir JJ Asilo',
-    message: 'Hi Sarah! I have a few new listings that match your criteria. Would you like to schedule a viewing this weekend?',
+    message: 'Hi! I have a few new listings that match your criteria. Would you like to schedule a viewing this weekend?',
     time: '2 hours ago',
     avatar: 'http://localhost:3001/test/asset/img/actor/1_elon_musk_in_iron_man_suit.jpg',
     hasReply: true
@@ -150,20 +29,87 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
   const [recommendations, setRecommendations] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load saved properties and recommendations
-    setSavedProperties(mockSavedProperties);
-    setRecommendations(mockRecommendations);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch saved properties and recommendations in parallel
+        const [savedPropertiesData, recommendationsData] = await Promise.all([
+          getSavedProperties(),
+          getRecommendations()
+        ]);
+        
+        setSavedProperties(savedPropertiesData);
+        setRecommendations(recommendationsData);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const handleSaveProperty = (propertyId: string) => {
-    console.log('Save property:', propertyId);
+  const handleSaveProperty = async (propertyId: string) => {
+    try {
+      await saveProperty(propertyId);
+      // In a real implementation, you might want to refresh the data or update the UI
+      console.log('Property saved successfully:', propertyId);
+    } catch (error) {
+      console.error('Error saving property:', error);
+    }
   };
 
-  const handleUnsaveProperty = (propertyId: string) => {
-    console.log('Unsave property:', propertyId);
+  const handleUnsaveProperty = async (propertyId: string) => {
+    try {
+      await unsaveProperty(propertyId);
+      // Remove the property from the saved properties list
+      setSavedProperties(prev => prev.filter(p => p.id !== propertyId));
+      console.log('Property unsaved successfully:', propertyId);
+    } catch (error) {
+      console.error('Error unsaving property:', error);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002B5C]"></div>
+            <span className="ml-3 text-gray-600">Loading dashboard...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center py-12">
+            <div className="text-red-600 mb-4">{error}</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-[#002B5C] text-white px-6 py-2 rounded-md hover:bg-[#002B5C]/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -234,18 +180,24 @@ const Dashboard: React.FC = () => {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recommendations.slice(0, 3).map((property, index) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                onSave={handleSaveProperty}
-                onUnsave={handleUnsaveProperty}
-                showMatchPercentage={true}
-                matchPercentage={[95, 88, 82][index]}
-              />
-            ))}
-          </div>
+          {recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommendations.slice(0, 3).map((property, index) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  onSave={handleSaveProperty}
+                  onUnsave={handleUnsaveProperty}
+                  showMatchPercentage={true}
+                  matchPercentage={[95, 88, 82][index]}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-lg">
+              <p className="text-gray-500">No recommendations available at the moment.</p>
+            </div>
+          )}
         </section>
 
         {/* Recent Messages Section */}

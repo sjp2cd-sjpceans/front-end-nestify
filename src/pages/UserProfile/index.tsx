@@ -4,106 +4,13 @@ import Header from '../../components/layout/Header';
 import PropertyCard from '../../components/features/PropertyCard';
 import { useAuth } from '../../context/AuthContext';
 import type { Property } from '../../services/property.service';
-
-// Mock saved properties for the user profile page
-const mockUserSavedProperties: Property[] = [
-  {
-    id: '1',
-    name: 'Modern Family Home',
-    description: 'Spacious modern home perfect for families',
-    price: 750000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 2400,
-    propertyType: 'House',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-      altText: 'Modern Family Home',
-      isPrimary: true
-    }],
-    beds: 4,
-    baths: 3
-  },
-  {
-    id: '2',
-    name: 'Charming Suburban Home',
-    description: 'Beautiful suburban home with great amenities',
-    price: 520000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 1850,
-    propertyType: 'House',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-      altText: 'Charming Suburban Home',
-      isPrimary: true
-    }],
-    beds: 3,
-    baths: 2
-  },
-  {
-    id: '3',
-    name: 'Contemporary Townhouse',
-    description: 'Modern townhouse with updated finishes',
-    price: 580000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 2100,
-    propertyType: 'Townhouse',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-      altText: 'Contemporary Townhouse',
-      isPrimary: true
-    }],
-    beds: 3,
-    baths: 2
-  },
-  {
-    id: '4',
-    name: 'Luxury City Condo',
-    description: 'High-end condo in prime location',
-    price: 650000,
-    discountPrice: undefined,
-    hadDiscount: false,
-    size: 1200,
-    propertyType: 'Condo',
-    status: 'Available',
-    address: {
-      street: '123 Ecoland',
-      city: 'Malina',
-      zipCode: '1000'
-    },
-    images: [{
-      url: 'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-      altText: 'Luxury City Condo',
-      isPrimary: true
-    }],
-    beds: 2,
-    baths: 2
-  }
-];
+import { getSavedProperties, saveProperty, unsaveProperty } from '../../services/property.service';
 
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchPreferences, setSearchPreferences] = useState({
     location: 'Downtown',
     priceRange: '₱300,000 - ₱750,000',
@@ -112,16 +19,41 @@ const UserProfile: React.FC = () => {
   });
 
   useEffect(() => {
-    setSavedProperties(mockUserSavedProperties);
+    const fetchSavedProperties = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const savedPropertiesData = await getSavedProperties();
+        setSavedProperties(savedPropertiesData);
+      } catch (err) {
+        console.error('Error fetching saved properties:', err);
+        setError('Failed to load saved properties. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSavedProperties();
   }, []);
 
-  const handleSaveProperty = (propertyId: string) => {
-    console.log('Save property:', propertyId);
+  const handleSaveProperty = async (propertyId: string) => {
+    try {
+      await saveProperty(propertyId);
+      console.log('Property saved successfully:', propertyId);
+    } catch (error) {
+      console.error('Error saving property:', error);
+    }
   };
 
-  const handleUnsaveProperty = (propertyId: string) => {
-    console.log('Unsave property:', propertyId);
-    setSavedProperties(prev => prev.filter(p => p.id !== propertyId));
+  const handleUnsaveProperty = async (propertyId: string) => {
+    try {
+      await unsaveProperty(propertyId);
+      setSavedProperties(prev => prev.filter(p => p.id !== propertyId));
+      console.log('Property unsaved successfully:', propertyId);
+    } catch (error) {
+      console.error('Error unsaving property:', error);
+    }
   };
 
   const handleEditProfile = () => {
@@ -131,6 +63,39 @@ const UserProfile: React.FC = () => {
   const handleEditPreferences = () => {
     console.log('Edit preferences clicked');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002B5C]"></div>
+            <span className="ml-3 text-gray-600">Loading profile...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center py-12">
+            <div className="text-red-600 mb-4">{error}</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-[#002B5C] text-white px-6 py-2 rounded-md hover:bg-[#002B5C]/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
