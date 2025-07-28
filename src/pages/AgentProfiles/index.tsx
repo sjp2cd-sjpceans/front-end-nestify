@@ -79,7 +79,7 @@ const AgentProfiles: React.FC = () => {
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd" />
                     </svg>
-                    <span>SUP2CD Scammer Group</span>
+                    <span>SJP2CD Investor Group</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -100,7 +100,7 @@ const AgentProfiles: React.FC = () => {
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
-                    <span>jj@sup2cd.com.ph</span>
+                    <span>jj@sjp2cd.edu.ph</span>
                   </div>
                 </div>
               </div>
@@ -122,7 +122,7 @@ const AgentProfiles: React.FC = () => {
           <div className="lg:col-span-2">
             {/* About Section */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h2 className="text-xl font-semibold text-[#002B5C] mb-4">About Michael</h2>
+              <h2 className="text-xl font-semibold text-[#002B5C] mb-4">About SIR JJ Asilo</h2>
               <p className="text-gray-700 leading-relaxed">
                 With over 8+ years of experience in the real estate industry, Sir JJ Asilo has established himself as a trusted 
                 advisor for home buyers and sellers throughout the metropolitan area. Specializing in residential properties, JJ 
@@ -256,7 +256,7 @@ const AgentProfiles: React.FC = () => {
           <div className="lg:col-span-1">
             {/* Contact Form */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h3 className="text-lg font-semibold text-[#002B5C] mb-4">Contact Scammer</h3>
+              <h3 className="text-lg font-semibold text-[#002B5C] mb-4">Contact Me</h3>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>

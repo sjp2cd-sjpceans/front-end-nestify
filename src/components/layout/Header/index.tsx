@@ -88,10 +88,10 @@ const Header: React.FC = () => {
             </>
           ) : (
             <>
-              <Link to="/" className="text-[#002B5C] hover:text-[#002B5C]/80">Home</Link>
-              <Link to="/listings" className="text-[#002B5C] hover:text-[#002B5C]/80">Listings</Link>
-              <Link to="/agents" className="text-[#002B5C] hover:text-[#002B5C]/80">Agent/Broker Profiles</Link>
-              <Link to="/auth" className="text-[#002B5C] hover:text-[#002B5C]/80">Login</Link>
+              <Link to="/" className={getLinkClasses('/')}>Home</Link>
+              <Link to="/listings" className={getLinkClasses('/listings')}>Listings</Link>
+              <Link to="/agents" className={getLinkClasses('/agents')}>Agent/Broker Profiles</Link>
+              <Link to="/auth" className={getLinkClasses('/auth')}>Login</Link>
               <Link 
                 to="/auth?tab=register" 
                 className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#002B5C]/90 transition-colors"
