@@ -5,6 +5,11 @@ import Home from './pages/Home';
 import Authentication from './pages/Authentication';
 import Dashboard from './pages/Dashboard';
 import UserProfile from './pages/UserProfile';
+import PropertyListings from './pages/PropertyListings';
+import AgentProfiles from './pages/AgentProfiles';
+import Recommendations from './pages/Recommendations';
+import SavedProperties from './pages/SavedProperties';
+import Messages from './pages/Messages';
 import './App.css';
 
 function App() {
@@ -32,6 +37,46 @@ function App() {
               element={
                 <ProtectedRoute>
                   <UserProfile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/properties" 
+              element={
+                <ProtectedRoute>
+                  <PropertyListings />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/agents" 
+              element={
+                <ProtectedRoute>
+                  <AgentProfiles />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/recommendations" 
+              element={
+                <ProtectedRoute>
+                  <Recommendations />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/saved" 
+              element={
+                <ProtectedRoute>
+                  <SavedProperties />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/messages" 
+              element={
+                <ProtectedRoute>
+                  <Messages />
                 </ProtectedRoute>
               } 
             />

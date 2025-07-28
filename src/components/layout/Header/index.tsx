@@ -1,13 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
   };
+
+  // Check if user is on landing page
+  const isOnLandingPage = location.pathname === '/';
 
   return (
     <header className="bg-white py-4 px-6 shadow-sm">
@@ -19,11 +23,26 @@ const Header: React.FC = () => {
         <nav className="flex items-center space-x-8">
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard" className="text-[#002B5C] hover:text-[#002B5C]/80">
-                Dashboard
-              </Link>
+              {isOnLandingPage ? (
+                <Link to="/dashboard" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                  Dashboard
+                </Link>
+              ) : (
+                <Link to="/" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                  Home
+                </Link>
+              )}
               <Link to="/properties" className="text-[#002B5C] hover:text-[#002B5C]/80">
-                Properties
+                Property Listings
+              </Link>
+              <Link to="/agents" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                Agent/Broker Profiles
+              </Link>
+              <Link to="/recommendations" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                Recommendations
+              </Link>
+              <Link to="/saved" className="text-[#002B5C] hover:text-[#002B5C]/80">
+                Saved Properties
               </Link>
               <Link to="/messages" className="text-[#002B5C] hover:text-[#002B5C]/80">
                 Messages
