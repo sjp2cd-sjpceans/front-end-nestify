@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import * as authService from '../services/auth.service';
 
 type UserRole = 'client' | 'agent' | null;
 
@@ -14,9 +15,10 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (usernameOrEmail: string, password: string) => Promise<void>;
   register: (userData: Partial<User> & { password: string }) => Promise<void>;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,43 +29,97 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const isAuthenticated = !!user;
 
-  // These functions will be implemented later with actual API calls
-  const login = async (email: string, password: string) => {
-    // Mock implementation for now
-    console.log('Login attempt with:', email, password);
-    // In a real implementation, you would make an API call here
-    // and handle the response, storing tokens, etc.
-    const mockUser: User = {
-      id: '1',
-      email,
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'client',
+  useEffect(() => {
+    // Check if user is already logged in (has valid token)
+    const initializeAuth = async () => {
+      try {
+        const storedUser = authService.getStoredUser();
+        const storedToken = authService.getStoredToken();
+        
+        if (storedUser && storedToken) {
+          // Verify the token is still valid
+          const isValid = await authService.verifyToken();
+          
+          if (isValid) {
+            // Ensure the role is cast to UserRole
+            setUser({
+              ...storedUser,
+              role: storedUser.role as UserRole
+            });
+          } else {
+            // Token is invalid, clear auth data
+            authService.clearAuthData();
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing authentication:', error);
+        authService.clearAuthData();
+      } finally {
+        setLoading(false);
+      }
     };
-    setUser(mockUser);
+
+    initializeAuth();
+  }, []);
+
+  const login = async (usernameOrEmail: string, password: string) => {
+    setLoading(true);
+    try {
+      const response = await authService.login({ usernameOrEmail, password });
+      
+      // Store token and user data
+      authService.setAuthData(response);
+      
+      // Update state with properly typed role
+      setUser({
+        ...response.user,
+        role: response.user.role as UserRole
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const register = async (userData: Partial<User> & { password: string }) => {
-    // Mock implementation for now
-    console.log('Register attempt with:', userData);
-    // In a real implementation, you would make an API call here
-    const mockUser: User = {
-      id: '1',
-      email: userData.email || '',
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      role: userData.role || 'client',
-    };
-    setUser(mockUser);
+    setLoading(true);
+    try {
+      const response = await authService.register({
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        email: userData.email || '',
+        password: userData.password,
+        role: userData.role || 'client',
+      });
+      
+      // Store token and user data
+      authService.setAuthData(response);
+      
+      // Update state with properly typed role
+      setUser({
+        ...response.user,
+        role: response.user.role as UserRole
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
-    // Mock implementation for now
+    // Clear auth data from localStorage
+    authService.clearAuthData();
+    
+    // Reset state
     setUser(null);
-    // In a real implementation, you would also clear tokens, etc.
   };
 
   const value = {
@@ -72,6 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     logout,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

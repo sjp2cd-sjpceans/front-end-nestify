@@ -4,6 +4,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/layout/Header';
+import loginBg from '../../assets/images/login-bg.png';
 
 const EmailIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -17,11 +18,24 @@ const LockIcon = () => (
   </svg>
 );
 
+const HomeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+  </svg>
+);
+
+const LoadingSpinner = () => (
+  <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+);
+
 const Authentication: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const location = useLocation();
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, loading, isAuthenticated } = useAuth();
   
   // Form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -38,6 +52,9 @@ const Authentication: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
   
+  // Form submission state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   useEffect(() => {
     // Parse URL query parameters
     const searchParams = new URLSearchParams(location.search);
@@ -51,32 +68,50 @@ const Authentication: React.FC = () => {
     }
   }, [location.search]);
   
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+  
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setIsSubmitting(true);
     
     try {
       await login(loginEmail, loginPassword);
-      navigate('/'); // Redirect to home page after successful login
-    } catch (error) {
-      setLoginError('Invalid email or password');
+      // Redirect will happen automatically due to the useEffect above
+    } catch (error: any) {
+      // Handle specific error messages from API
+      if (error.response && error.response.data && error.response.data.error) {
+        setLoginError(error.response.data.error);
+      } else {
+        setLoginError('Invalid email or password. Please try again.');
+      }
       console.error('Login error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setRegisterError('');
+    setIsSubmitting(true);
     
     // Validate passwords match
     if (registerPassword !== confirmPassword) {
       setRegisterError('Passwords do not match');
+      setIsSubmitting(false);
       return;
     }
     
     // Validate terms agreement
     if (!agreeToTerms) {
       setRegisterError('You must agree to the terms and conditions');
+      setIsSubmitting(false);
       return;
     }
     
@@ -88,61 +123,85 @@ const Authentication: React.FC = () => {
         password: registerPassword,
         role: isAgent ? 'agent' : 'client',
       });
-      navigate('/'); // Redirect to home page after successful registration
-    } catch (error) {
+      // Redirect will happen automatically due to the useEffect above
+    } catch (error: any) {
+      // Handle specific error messages from API
+      if (error.response && error.response.data && error.response.data.error) {
+        setRegisterError(error.response.data.error);
+      } else {
       setRegisterError('Registration failed. Please try again.');
+      }
       console.error('Registration error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <Link to="/">
-            <h1 className="text-center text-3xl font-bold text-[#002B5C]">Nestify</h1>
-          </Link>
-        </div>
+      <div 
+        className="min-h-screen flex flex-col justify-center items-center py-12"
+        style={{
+          backgroundImage: `url(${loginBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative',
+        }}
+      >
+        {/* Background overlay */}
+        <div 
+          className="absolute inset-0 bg-white/90"
+          style={{ backdropFilter: 'blur(2px)' }}
+        ></div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Tabs */}
-          <div className="flex border-b border-gray-200 mb-6">
+            <div className="flex">
             <button
-              className={`w-1/2 py-2 text-center font-medium text-sm ${
+                className={`w-1/2 py-4 text-center font-medium ${
                 activeTab === 'login'
-                  ? 'text-[#002B5C] border-b-2 border-[#002B5C]'
-                  : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-white text-gray-900'
+                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('login')}
+                disabled={loading}
             >
               Login
             </button>
             <button
-              className={`w-1/2 py-2 text-center font-medium text-sm ${
+                className={`w-1/2 py-4 text-center font-medium ${
                 activeTab === 'register'
-                  ? 'text-[#002B5C] border-b-2 border-[#002B5C]'
-                  : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-white text-gray-900'
+                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('register')}
+                disabled={loading}
             >
               Register
             </button>
           </div>
 
+            <div className="px-8 py-8">
           {/* Login Form */}
           {activeTab === 'login' && (
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6 text-gray-900">
+                  <div className="flex justify-center mb-6">
+                    <div className="h-16 w-16 rounded-full bg-blue-50 flex items-center justify-center text-[#002B5C]">
+                      <HomeIcon />
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
                 Welcome Back
               </h2>
-              <p className="text-center text-sm text-gray-600 mb-6">
+                  <p className="text-center text-sm text-gray-600 mb-8">
                 Sign in to your Nestify account
               </p>
 
               {loginError && (
-                <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <div className="mb-6 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
                   {loginError}
                 </div>
               )}
@@ -150,15 +209,16 @@ const Authentication: React.FC = () => {
               <form className="space-y-6" onSubmit={handleLoginSubmit}>
                 <Input
                   label="Email Address"
-                  type="email"
-                  name="email"
-                  id="email"
+                      type="text"
+                      name="usernameOrEmail"
+                      id="usernameOrEmail"
                   placeholder="Enter your email"
-                  autoComplete="email"
+                      autoComplete="username email"
                   required
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                   icon={<EmailIcon />}
+                      disabled={isSubmitting}
                 />
 
                 <div>
@@ -173,6 +233,7 @@ const Authentication: React.FC = () => {
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     icon={<LockIcon />}
+                        disabled={isSubmitting}
                   />
                 </div>
 
@@ -196,8 +257,20 @@ const Authentication: React.FC = () => {
                   </div>
                 </div>
 
-                <Button type="submit" fullWidth>
-                  Sign In
+                    <Button 
+                      type="submit" 
+                      fullWidth 
+                      disabled={isSubmitting || !loginEmail || !loginPassword}
+                      variant="secondary"
+                      className="py-3"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <LoadingSpinner /> Signing In...
+                        </span>
+                      ) : (
+                        'Sign In'
+                      )}
                 </Button>
               </form>
             </div>
@@ -206,15 +279,15 @@ const Authentication: React.FC = () => {
           {/* Register Form */}
           {activeTab === 'register' && (
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6 text-gray-900">
+                  <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
                 Create Your Account
               </h2>
-              <p className="text-center text-sm text-gray-600 mb-6">
+                  <p className="text-center text-sm text-gray-600 mb-8">
                 Join Nestify to find your perfect property
               </p>
 
               {registerError && (
-                <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <div className="mb-6 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
                   {registerError}
                 </div>
               )}
@@ -231,6 +304,7 @@ const Authentication: React.FC = () => {
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                        disabled={isSubmitting}
                   />
                   <Input
                     label="Last Name"
@@ -242,6 +316,7 @@ const Authentication: React.FC = () => {
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                        disabled={isSubmitting}
                   />
                 </div>
 
@@ -256,6 +331,7 @@ const Authentication: React.FC = () => {
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
                   icon={<EmailIcon />}
+                      disabled={isSubmitting}
                 />
 
                 <Input
@@ -269,6 +345,7 @@ const Authentication: React.FC = () => {
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
                   icon={<LockIcon />}
+                      disabled={isSubmitting}
                 />
 
                 <Input
@@ -282,6 +359,7 @@ const Authentication: React.FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   icon={<LockIcon />}
+                      disabled={isSubmitting}
                 />
 
                 <div>
@@ -293,6 +371,7 @@ const Authentication: React.FC = () => {
                       checked={isAgent}
                       onChange={(e) => setIsAgent(e.target.checked)}
                       className="h-4 w-4 text-[#002B5C] focus:ring-[#002B5C] border-gray-300 rounded"
+                          disabled={isSubmitting}
                     />
                     <span className="ml-2 block text-sm text-gray-700">
                       Register as an Agent/Broker
@@ -309,6 +388,7 @@ const Authentication: React.FC = () => {
                       checked={agreeToTerms}
                       onChange={(e) => setAgreeToTerms(e.target.checked)}
                       className="h-4 w-4 text-[#002B5C] focus:ring-[#002B5C] border-gray-300 rounded"
+                          disabled={isSubmitting}
                     />
                     <span className="ml-2 block text-sm text-gray-700">
                       I agree to the{' '}
@@ -323,8 +403,19 @@ const Authentication: React.FC = () => {
                   </label>
                 </div>
 
-                <Button type="submit" fullWidth>
-                  Create Account
+                    <Button 
+                      type="submit" 
+                      fullWidth
+                      className="py-3"
+                      disabled={isSubmitting || !firstName || !lastName || !registerEmail || !registerPassword || !confirmPassword}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <LoadingSpinner /> Creating Account...
+                        </span>
+                      ) : (
+                        'Create Account'
+                      )}
                 </Button>
               </form>
             </div>
@@ -334,6 +425,7 @@ const Authentication: React.FC = () => {
             <p className="text-center text-xs text-gray-600">
               Secure access for Agents, Brokers, and Clients
             </p>
+              </div>
           </div>
         </div>
       </div>
