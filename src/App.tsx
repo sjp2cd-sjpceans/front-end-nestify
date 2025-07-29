@@ -80,6 +80,13 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* <Route 
+              path="/listing" 
+              element={
+                <PropertyListingPageForNonRegisteredUser />
+              } 
+            /> */}
           </Routes>
         </div>
       </Router>
