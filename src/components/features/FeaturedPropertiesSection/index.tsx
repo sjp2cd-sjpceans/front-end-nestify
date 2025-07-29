@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProperties, type Property } from '../../../services/property.
-import React from 'react';
+import { getProperties, type Property } from '../../../services/property.service';
 import featured1 from '@nestify/assets/images/featured1.png';
 import featured2 from '@nestify/assets/images/featured2.png';
 import featured3 from '@nestify/assets/images/featured3.png';
