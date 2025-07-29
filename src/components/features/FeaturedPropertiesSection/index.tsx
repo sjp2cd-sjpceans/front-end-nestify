@@ -1,6 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProperties, type Property } from '../../../services/property.service';
+import { getProperties, type Property } from '../../../services/property.
+import React from 'react';
+import featured1 from '@nestify/assets/images/featured1.png';
+import featured2 from '@nestify/assets/images/featured2.png';
+import featured3 from '@nestify/assets/images/featured3.png';
+
+// Mock data for featured properties
+const featuredProperties = [
+  {
+    id: 1,
+    title: 'Balay ni maam karen',
+    price: '750K',
+    image: featured1,
+    description: 'Beautiful 4-bedroom home with modern amenities in a quiet neighborhood.',
+    beds: 4,
+    baths: 3,
+    area: '2,400 sq ft'
+  },
+  {
+    id: 2,
+    title: 'Balay ni sir Ken',
+    price: '550K',
+    image: featured2,
+    description: 'Stunning 2-bedroom condo with panoramic city views and premium finishes.',
+    beds: 2,
+    baths: 2,
+    area: '1,200 sq ft'
+  },
+  {
+    id: 3,
+    title: 'Balay ni sir Asilo',
+    price: '425K',
+    image: featured3,
+    description: 'Cozy 3-bedroom home perfect for families, featuring a large backyard.',
+    beds: 3,
+    baths: 2,
+    area: '1,800 sq ft'
+  }
+];
 
 const FeaturedPropertiesSection: React.FC = () => {
   const navigate = useNavigate();

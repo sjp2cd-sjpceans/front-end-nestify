@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../../components/layout/Header';
-import PropertyCard from '../../components/features/PropertyCard';
-import { useAuth } from '../../context/AuthContext';
-import type { Property } from '../../services/property.service';
-import { getSavedProperties, saveProperty, unsaveProperty } from '../../services/property.service';
+import Header from '@nestify/components/layout/Header';
+import PropertyCard from '@nestify/components/features/PropertyCard';
+import { useAuth } from '@nestify/context/AuthContext';
+import type { Property } from '@nestify/services/property.service';
+import { getSavedProperties, saveProperty, unsaveProperty } from '@nestify/services/property.service';
 
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchPreferences, setSearchPreferences] = useState({
+  const [searchPreferences/*, setSearchPreferences*/] = useState({
     location: 'Downtown',
     priceRange: '₱300,000 - ₱750,000',
     propertyType: 'Single Family',

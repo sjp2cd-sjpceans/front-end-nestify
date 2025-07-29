@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components/layout/Header';
 import { getProperties, type Property } from '../../services/property.service';
+import Header from '@nestify/components/layout/Header';
 
 const AgentProfiles: React.FC = () => {
   const navigate = useNavigate();

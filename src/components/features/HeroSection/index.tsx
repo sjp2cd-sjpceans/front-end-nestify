@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import heroBg from '../../../assets/images/hero-bg.png';
+import heroBg from '@nestify/assets/images/hero-bg.png';
 
 const HeroSection: React.FC = () => {
   const navigate = useNavigate();

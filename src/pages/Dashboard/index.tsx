@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../../components/layout/Header';
+
 import PropertyCard from '../../components/features/PropertyCard';
 import AgentDashboard from './AgentDashboard';
 import { useAuth } from '../../context/AuthContext';
 import type { Property } from '../../services/property.service';
 import { getSavedProperties, getRecommendations, saveProperty, unsaveProperty } from '../../services/property.service';
+import Header from '@nestify/components/layout/Header';
 
 const mockMessages = [
   {

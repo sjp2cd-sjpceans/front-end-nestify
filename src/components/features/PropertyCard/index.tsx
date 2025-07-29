@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
-import type { Property } from '../../../services/property.service';
+import type { Property } from '@nestify/services/property.service';
 
 interface PropertyCardProps {
   property: Property;
