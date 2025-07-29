@@ -10,6 +10,8 @@ import AgentProfiles from './pages/AgentProfiles';
 import Recommendations from './pages/Recommendations';
 import SavedProperties from './pages/SavedProperties';
 import Messages from './pages/Messages';
+
+import AIDemo from './pages/AIDemo';
 import './App.css';
 
 function App() {
@@ -78,6 +80,13 @@ function App() {
                 <ProtectedRoute>
                   <Messages />
                 </ProtectedRoute>
+              } 
+            />
+
+            <Route
+              path="/ai-demo"
+              element={
+                <AIDemo />
               } 
             />
 

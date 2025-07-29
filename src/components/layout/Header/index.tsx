@@ -48,6 +48,10 @@ const Header: React.FC = () => {
                 Messages
               </Link>
               
+              <Link to="/ai-demo" className="text-amber-800 hover:text-[#002B5C]/80">
+                AI Demo
+              </Link>
+              
               {/* User Menu */}
               <div className="relative flex items-center space-x-4">
                 <Link 
