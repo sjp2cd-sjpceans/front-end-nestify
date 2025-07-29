@@ -24,23 +24,40 @@ export interface Property {
   baths: number;
 }
 
-// Backend API property structure
-interface ApiProperty {
+// Backend enriched property structure
+interface ApiEnrichedProperty {
   id: number;
   name: string;
   description: string;
-  price: string;
-  discount_price?: string;
-  had_discount: number;
-  size: string;
-  property_type_id: number;
-  status_id: number;
-  address_id: number;
-  actor_property_owner_id: number;
-  actor_sales_office_id: number;
-  actor_agent_id: number;
-  created_at: string;
-  updated_at: string;
+  size: number;
+  price: number;
+  hadDiscount: boolean;
+  discountPrice?: number | null;
+  propertyType: string;
+  status: string;
+  address: {
+    unitNumber?: string;
+    street: string;
+    city: string;
+    zipCode: string;
+    country: string;
+    latitude?: number;
+    longitude?: number;
+  };
+  images: {
+    id: number;
+    url: string;
+    altText: string;
+    isPrimary: boolean;
+    format: string;
+  }[];
+  agent?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
 }
 
 export interface PropertyListResponse {
@@ -50,39 +67,9 @@ export interface PropertyListResponse {
   limit: number;
 }
 
-// Property type mapping
-const propertyTypeMap: { [key: number]: string } = {
-  1: 'Apartment',
-  2: 'Condo',
-  3: 'House',
-  4: 'Villa',
-  5: 'Studio',
-  6: 'Loft',
-  7: 'Duplex',
-  8: 'Penthouse',
-  9: 'Townhouse',
-  10: 'Bungalow',
-};
-
-// Status mapping
-const statusMap: { [key: number]: string } = {
-  1: 'Available',
-  2: 'Sold',
-  3: 'Pending',
-  4: 'Off Market',
-};
-
-// Function to map API property to frontend Property interface
-const mapApiPropertyToProperty = (apiProperty: ApiProperty): Property => {
-  // Generate mock address and property details since they're not in the API response
-  const mockAddresses = [
-    { street: '123 Ecoland Drive', city: 'Malina', zipCode: '1000' },
-    { street: '456 Business District', city: 'Manila', zipCode: '1001' },
-    { street: '789 Residential Ave', city: 'Quezon City', zipCode: '1100' },
-    { street: '321 Downtown Street', city: 'Makati', zipCode: '1200' },
-    { street: '654 Suburban Lane', city: 'Pasig', zipCode: '1600' },
-  ];
-
+// Function to map API enriched property to frontend Property interface
+const mapApiEnrichedPropertyToProperty = (apiProperty: ApiEnrichedProperty): Property => {
+  // Generate mock beds/baths since they're not in the database yet
   const mockBedsBaths = [
     { beds: 1, baths: 1 },
     { beds: 2, baths: 1 },
@@ -90,26 +77,31 @@ const mapApiPropertyToProperty = (apiProperty: ApiProperty): Property => {
     { beds: 3, baths: 2 },
     { beds: 4, baths: 3 },
   ];
-
-  const addressIndex = (apiProperty.id - 1) % mockAddresses.length;
+  
   const bedsIndex = (apiProperty.id - 1) % mockBedsBaths.length;
 
   return {
     id: apiProperty.id.toString(),
     name: apiProperty.name,
     description: apiProperty.description,
-    price: parseFloat(apiProperty.price),
-    discountPrice: apiProperty.discount_price ? parseFloat(apiProperty.discount_price) : undefined,
-    hadDiscount: Boolean(apiProperty.had_discount),
-    size: parseFloat(apiProperty.size),
-    propertyType: propertyTypeMap[apiProperty.property_type_id] || 'Unknown',
-    status: statusMap[apiProperty.status_id] || 'Unknown',
-    address: mockAddresses[addressIndex],
-    images: [{
-      url: `http://localhost:3001/test/asset/img/property/${apiProperty.id % 2 === 1 ? '1_start_house.jpeg' : '1_building_penthouse.jpg'}`,
-      altText: apiProperty.name,
-      isPrimary: true
-    }],
+    price: apiProperty.price,
+    discountPrice: apiProperty.discountPrice || undefined,
+    hadDiscount: apiProperty.hadDiscount,
+    size: apiProperty.size,
+    propertyType: apiProperty.propertyType,
+    status: apiProperty.status,
+    address: {
+      street: apiProperty.address.unitNumber 
+        ? `${apiProperty.address.unitNumber}, ${apiProperty.address.street}`
+        : apiProperty.address.street,
+      city: apiProperty.address.city,
+      zipCode: apiProperty.address.zipCode,
+    },
+    images: apiProperty.images.map(img => ({
+      url: `http://localhost:3001${img.url}`,
+      altText: img.altText,
+      isPrimary: img.isPrimary
+    })),
     beds: mockBedsBaths[bedsIndex].beds,
     baths: mockBedsBaths[bedsIndex].baths,
   };
@@ -124,20 +116,21 @@ export const getProperties = async (params?: {
   propertyType?: string;
   city?: string;
 }): Promise<Property[]> => {
-  const response = await api.get<ApiProperty[]>('/properties', { params });
-  return response.data.map(mapApiPropertyToProperty);
+  const response = await api.get<ApiEnrichedProperty[]>('/properties', { params });
+  return response.data.map(mapApiEnrichedPropertyToProperty);
 };
 
 // Get properties with pagination
 export const getPropertiesRange = async (offset: number = 0, limit: number = 10): Promise<Property[]> => {
-  const response = await api.get<ApiProperty[]>(`/properties/range?offset=${offset}&limit=${limit}`);
-  return response.data.map(mapApiPropertyToProperty);
+  // For now, just get all properties and slice them
+  const allProperties = await getProperties();
+  return allProperties.slice(offset, offset + limit);
 };
 
 // Get property by ID
 export const getPropertyById = async (id: string): Promise<Property> => {
-  const response = await api.get<ApiProperty>(`/properties/${id}`);
-  return mapApiPropertyToProperty(response.data);
+  const response = await api.get<ApiEnrichedProperty>(`/properties/${id}`);
+  return mapApiEnrichedPropertyToProperty(response.data);
 };
 
 // Get saved properties for user (mock implementation for now)

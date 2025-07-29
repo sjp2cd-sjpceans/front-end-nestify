@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
+import { useAuth } from '../../context/AuthContext';
 import { getPropertyById, getProperties, type Property } from '../../services/property.service';
 
 const PropertyDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,14 +16,16 @@ const PropertyDetails: React.FC = () => {
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [similarProperties, setSimilarProperties] = useState<Property[]>([]);
 
-  // Mock additional images for the gallery
-  const mockImages = [
-    'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-    'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-    'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-    'http://localhost:3001/test/asset/img/property/1_building_penthouse.jpg',
-    'http://localhost:3001/test/asset/img/property/1_start_house.jpeg',
-  ];
+  // Get images from property data, fallback to default if none available
+  const getPropertyImages = () => {
+    if (property?.images && property.images.length > 0) {
+      return property.images.map(img => img.url); // Use img.url directly - it's already a complete URL
+    }
+    // Fallback to default images if no property images
+    return [
+      'http://localhost:3001/test/asset/img/default/default_000.jpg'
+    ];
+  };
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -60,6 +64,10 @@ const PropertyDetails: React.FC = () => {
   };
 
   const handleSaveProperty = () => {
+    if (!isAuthenticated) {
+      navigate('/auth?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
     console.log('Saving property:', property?.id);
     // Implement save functionality
   };
@@ -67,6 +75,15 @@ const PropertyDetails: React.FC = () => {
   const handleShareProperty = () => {
     console.log('Sharing property:', property?.id);
     // Implement share functionality
+  };
+
+  const handleAuthRequiredAction = (action: string) => {
+    if (!isAuthenticated) {
+      navigate('/auth?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    console.log(`${action} - requires authentication`);
+    // Implement specific action
   };
 
   if (loading) {
@@ -168,11 +185,12 @@ const PropertyDetails: React.FC = () => {
                 <button
                   onClick={handleSaveProperty}
                   className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  title={isAuthenticated ? 'Save property' : 'Login to save properties'}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  Save
+                  {isAuthenticated ? 'Save' : 'Login to Save'}
                 </button>
                 <button
                   onClick={handleShareProperty}
@@ -183,6 +201,14 @@ const PropertyDetails: React.FC = () => {
                   </svg>
                   Share
                 </button>
+                {!isAuthenticated && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    Guest viewing
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -194,7 +220,7 @@ const PropertyDetails: React.FC = () => {
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="relative">
                   <img
-                    src={mockImages[selectedImageIndex]}
+                    src={getPropertyImages()[selectedImageIndex]}
                     alt={property.name}
                     className="w-full h-96 object-cover"
                   />
@@ -212,7 +238,7 @@ const PropertyDetails: React.FC = () => {
                 {/* Image Thumbnails */}
                 <div className="p-4">
                   <div className="flex gap-2 overflow-x-auto">
-                    {mockImages.map((image, index) => (
+                    {getPropertyImages().map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setSelectedImageIndex(index)}
@@ -344,13 +370,24 @@ const PropertyDetails: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <button className="w-full bg-[#FFD700] text-[#002B5C] py-2 px-4 rounded-lg font-medium hover:bg-[#FFD700]/90 transition-colors">
-                    Message Agent
+                  <button 
+                    onClick={() => handleAuthRequiredAction('Message Agent')}
+                    className="w-full bg-[#FFD700] text-[#002B5C] py-2 px-4 rounded-lg font-medium hover:bg-[#FFD700]/90 transition-colors"
+                    title={isAuthenticated ? 'Message agent' : 'Login to contact agent'}
+                  >
+                    {isAuthenticated ? 'Message Agent' : 'Login to Message Agent'}
                   </button>
-                  <button className="w-full bg-[#002B5C] text-white py-2 px-4 rounded-lg font-medium hover:bg-[#002B5C]/90 transition-colors">
-                    Call (555) 123-4567
+                  <button 
+                    onClick={() => handleAuthRequiredAction('Call Agent')}
+                    className="w-full bg-[#002B5C] text-white py-2 px-4 rounded-lg font-medium hover:bg-[#002B5C]/90 transition-colors"
+                    title={isAuthenticated ? 'Call agent' : 'Login to contact agent'}
+                  >
+                    {isAuthenticated ? 'Call (555) 123-4567' : 'Login to Call Agent'}
                   </button>
-                  <button className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                  <button 
+                    onClick={() => navigate('/agents')}
+                    className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  >
                     View Profile
                   </button>
                 </div>
@@ -361,14 +398,26 @@ const PropertyDetails: React.FC = () => {
                 <h3 className="text-lg font-semibold text-[#002B5C] mb-4">Interested in this property?</h3>
                 
                 <div className="space-y-2">
-                  <button className="w-full bg-[#002B5C] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#002B5C]/90 transition-colors">
-                    Schedule a Visit
+                  <button 
+                    onClick={() => handleAuthRequiredAction('Schedule Visit')}
+                    className="w-full bg-[#002B5C] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#002B5C]/90 transition-colors"
+                    title={isAuthenticated ? 'Schedule a visit' : 'Login to schedule visits'}
+                  >
+                    {isAuthenticated ? 'Schedule a Visit' : 'Login to Schedule Visit'}
                   </button>
-                  <button className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                    Request Info
+                  <button 
+                    onClick={() => handleAuthRequiredAction('Request Info')}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                    title={isAuthenticated ? 'Request information' : 'Login to request information'}
+                  >
+                    {isAuthenticated ? 'Request Info' : 'Login to Request Info'}
                   </button>
-                  <button className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                    Mortgage Calculator
+                  <button 
+                    onClick={() => handleAuthRequiredAction('Mortgage Calculator')}
+                    className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    title={isAuthenticated ? 'Access mortgage calculator' : 'Login for mortgage calculator'}
+                  >
+                    {isAuthenticated ? 'Mortgage Calculator' : 'Login for Calculator'}
                   </button>
                 </div>
               </div>

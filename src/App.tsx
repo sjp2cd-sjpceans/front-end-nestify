@@ -19,16 +19,19 @@ function App() {
       <Router>
         <div className="app">
           <Routes>
+            {/* Authentication Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Authentication />} />
             <Route path="/login" element={<Navigate to="/auth" replace />} />
             <Route path="/signup" element={<Navigate to="/auth?tab=register" replace />} />
             
-            {/* Public Routes - accessible to all users */}
+            {/* Public Routes - accessible to all users including guests */}
             <Route path="/listings" element={<PropertyListings />} />
+            <Route path="/properties" element={<PropertyListings />} />
+            <Route path="/property/:id" element={<PropertyDetails />} />
             <Route path="/agents" element={<AgentProfiles />} />
             
-            {/* Protected Routes */}
+            {/* Protected Routes - require authentication */}
             <Route 
               path="/dashboard" 
               element={
@@ -42,30 +45,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <UserProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/properties" 
-              element={
-                <ProtectedRoute>
-                  <PropertyListings />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/property/:id" 
-              element={
-                <ProtectedRoute>
-                  <PropertyDetails />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/agents" 
-              element={
-                <ProtectedRoute>
-                  <AgentProfiles />
                 </ProtectedRoute>
               } 
             />

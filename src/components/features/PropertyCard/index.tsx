@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 import type { Property } from '../../../services/property.service';
 
 interface PropertyCardProps {
@@ -22,6 +23,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   const [imageError, setImageError] = useState(false);
   const [saved, setSaved] = useState(isSaved);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-PH', {
@@ -33,6 +35,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   const handleSaveToggle = () => {
+    // If user is not authenticated, redirect to login
+    if (!isAuthenticated) {
+      navigate('/auth?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
+    // If authenticated, proceed with save/unsave
     if (saved) {
       onUnsave?.(property.id);
     } else {
@@ -61,6 +70,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <button
           onClick={handleSaveToggle}
           className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+          title={isAuthenticated ? (saved ? 'Remove from saved' : 'Save property') : 'Login to save properties'}
         >
           <svg
             className={`w-5 h-5 ${saved ? 'text-red-500 fill-current' : 'text-gray-400'}`}
@@ -76,6 +86,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             />
           </svg>
         </button>
+
+        {/* Guest indicator for non-authenticated users */}
+        {!isAuthenticated && (
+          <div className="absolute top-3 left-3">
+            <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+              Guest View
+            </span>
+          </div>
+        )}
 
         {/* Match Percentage */}
         {showMatchPercentage && matchPercentage && (

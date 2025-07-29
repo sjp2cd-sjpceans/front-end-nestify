@@ -71,7 +71,15 @@ const Authentication: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      // Check for redirect URL in query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectUrl = urlParams.get('redirect');
+      
+      if (redirectUrl) {
+        navigate(decodeURIComponent(redirectUrl));
+      } else {
+        navigate('/dashboard');
+      }
     }
   }, [isAuthenticated, navigate]);
   
