@@ -41,6 +41,11 @@ const SearchResults: React.FC<{ resource: ReturnType<typeof createResource<Listi
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {results.map((item, i) => (
         <div key={i} className="border border-gray-200 rounded-lg p-6 shadow-lg bg-white hover:shadow-xl transition-shadow">
+
+          <img src={`http://localhost:3001${item.images[0].url || `/test/asset/img/default/default_000.jpg`}`}/>
+
+          <h1 className="text-2xl text-10">{item.name}</h1>
+
           {Object.entries(item).map(([k, v]) => (
             <div key={k} className="mb-2 flex">
               <span className="font-semibold w-32 capitalize">{k.replace(/_/g, ' ')}:</span>
