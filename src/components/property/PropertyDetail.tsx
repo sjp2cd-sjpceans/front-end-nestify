@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { MapPin, Bed, Bath, Square, Shield, Star, Phone, Heart, Share2, Mail, Calendar, Flag } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, Shield, Star, Phone, Heart, Share2, Mail, Calendar, Flag, Waves } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Property } from '../../types'
 import { usePropertyStats } from '../../hooks/useProperty'
@@ -42,6 +42,37 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property }) => {
     if (score >= 7) return 'bg-blue-500'
     if (score >= 5) return 'bg-yellow-500'
     return 'bg-red-500'
+  }
+
+  // Helper functions for risk profile data
+  const getRiskColor = (risk: string) => {
+    switch (risk?.toLowerCase()) {
+      case 'minimal':
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'moderate':
+      case 'fair':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'high':
+      case 'heavy':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'very_high':
+      case 'very_heavy':
+        return 'text-red-600 bg-red-50 border-red-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
+    }
+  }
+
+  const formatRiskLevel = (risk: string) => {
+    return risk?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'N/A'
+  }
+
+  const getScoreColor = (score: number) => {
+    if (score >= 8) return 'text-green-600'
+    if (score >= 6) return 'text-blue-600'
+    if (score >= 4) return 'text-yellow-600'
+    return 'text-red-600'
   }
 
   const getPropertyTags = () => {
@@ -266,6 +297,96 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property }) => {
                 <Square className="h-16 w-16 text-gray-400" />
               </div>
             )}
+          </div>
+
+          {/* Property Details */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Property Details</h2>
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Property Type</span>
+                  <span className="font-medium text-gray-900 capitalize">{property.property_type}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Bedrooms</span>
+                  <span className="font-medium text-gray-900">{property.bedrooms || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Bathrooms</span>
+                  <span className="font-medium text-gray-900">{property.bathrooms || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Floor Area</span>
+                  <span className="font-medium text-gray-900">{property.floor_area ? `${property.floor_area} sqm` : 'N/A'}</span>
+                </div>
+              </div>
+              
+              {/* Right Column */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Floor Level</span>
+                  <span className="font-medium text-gray-900">{property.floor_number ? `${property.floor_number}th Floor` : 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Parking</span>
+                  <span className="font-medium text-gray-900">{property.parking_spaces ? `${property.parking_spaces} Slot${property.parking_spaces > 1 ? 's' : ''}` : 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Furnishing</span>
+                  <span className="font-medium text-gray-900">Semi-Furnished</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Year Built</span>
+                  <span className="font-medium text-gray-900">{property.year_built || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Environmental & Safety Data */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Environmental & Safety Data</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Flood Risk */}
+              <div className="text-center p-4 rounded-lg border">
+                <div className="flex flex-col items-center">
+                  <Waves className="h-8 w-8 text-green-600 mb-3" />
+                  <h3 className="font-medium text-gray-900 mb-1">Flood Risk</h3>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getRiskColor(property.risk_profile?.flood_risk || 'low')}`}>
+                    {formatRiskLevel(property.risk_profile?.flood_risk || 'Low')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Crime Score */}
+              <div className="text-center p-4 rounded-lg border">
+                <div className="flex flex-col items-center">
+                  <Shield className="h-8 w-8 text-blue-600 mb-3" />
+                  <h3 className="font-medium text-gray-900 mb-1">Crime Score</h3>
+                  <span className={`text-lg font-bold ${getScoreColor(property.risk_profile?.safety_score || 8.5)}`}>
+                    {property.risk_profile?.safety_score || '8.5'}/10
+                  </span>
+                </div>
+              </div>
+
+              {/* Hospital Distance */}
+              <div className="text-center p-4 rounded-lg border">
+                <div className="flex flex-col items-center">
+                  <div className="h-8 w-8 mb-3 flex items-center justify-center">
+                    <svg className="h-8 w-8 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 8h-2v3h-3v2h3v3h2v-3h3v-2h-3V8zM4 6H2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2H8c-1.1 0-2-.9-2-2V6z"/>
+                      <path d="M6 2C4.9 2 4 2.9 4 4v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm6 2h2v3h3v2h-3v3h-2V9H9V7h3V4z"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">Hospital Distance</h3>
+                  <span className="text-orange-600 font-semibold">
+                    {property.risk_profile?.nearest_hospital_km ? `${property.risk_profile.nearest_hospital_km} km` : '1.2 km'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Property Features */}

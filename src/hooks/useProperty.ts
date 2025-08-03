@@ -60,7 +60,10 @@ export const useProperty = (propertyId: string | undefined) => {
                 flood_risk,
                 traffic_level,
                 healthcare_access,
-                education_access
+                education_access,
+                nearest_hospital_km,
+                nearest_school_km,
+                nearest_mall_km
               )
             ),
             property_images (
@@ -93,6 +96,9 @@ export const useProperty = (propertyId: string | undefined) => {
           bathrooms: property.bathrooms,
           floor_area: property.floor_area,
           lot_area: property.lot_area,
+          parking_spaces: property.parking_spaces,
+          floor_number: property.floor_number,
+          year_built: property.year_built,
           location: {
             barangay: property.locations?.barangay || '',
             city: property.locations?.city || '',
@@ -122,7 +128,10 @@ export const useProperty = (propertyId: string | undefined) => {
             flood_risk: property.locations?.risk_profiles?.flood_risk || 'moderate',
             traffic_level: property.locations?.risk_profiles?.traffic_level || 'moderate',
             healthcare_access: property.locations?.risk_profiles?.healthcare_access || 'fair',
-            education_access: property.locations?.risk_profiles?.education_access || 'fair'
+            education_access: property.locations?.risk_profiles?.education_access || 'fair',
+            nearest_hospital_km: property.locations?.risk_profiles?.nearest_hospital_km,
+            nearest_school_km: property.locations?.risk_profiles?.nearest_school_km,
+            nearest_mall_km: property.locations?.risk_profiles?.nearest_mall_km
           },
           environmental_tags: property.environmental_tags || [],
           images: property.property_images 

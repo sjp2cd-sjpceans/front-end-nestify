@@ -15,6 +15,9 @@ export interface RiskProfile {
   traffic_level: 'Light' | 'Moderate' | 'Heavy' | 'Very Heavy'
   healthcare_access: 'Limited' | 'Fair' | 'Good' | 'Excellent'
   education_access: 'Limited' | 'Fair' | 'Good' | 'Excellent'
+  nearest_hospital_km?: number
+  nearest_school_km?: number
+  nearest_mall_km?: number
 }
 
 export interface Agent {
@@ -42,6 +45,9 @@ export interface Property {
   bathrooms?: number
   floor_area?: number
   lot_area?: number
+  parking_spaces?: number
+  floor_number?: number
+  year_built?: number
   location: Location
   agent_id: string
   agent?: Agent
