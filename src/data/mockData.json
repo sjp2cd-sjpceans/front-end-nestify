@@ -1,0 +1,206 @@
+{
+  "properties": [
+    {
+      "id": "prop-1",
+      "title": "Modern 3BR House in Matina Aplaya",
+      "price": 3500000,
+      "location": {
+        "barangay": "Matina Aplaya",
+        "city": "Davao City",
+        "region": "Davao Region"
+      },
+      "agent_id": "agent-1",
+      "property_type": "house",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "area_sqm": 120,
+      "environmental_tags": ["flood-safe", "low-crime", "near-schools"],
+      "description": "Beautiful modern house with garden and parking",
+      "status": "active",
+      "created_at": "2024-01-15"
+    },
+    {
+      "id": "prop-2",
+      "title": "Luxury Condo in Ecoland",
+      "price": 4200000,
+      "location": {
+        "barangay": "Ecoland",
+        "city": "Davao City",
+        "region": "Davao Region"
+      },
+      "agent_id": "agent-2",
+      "property_type": "condo",
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "area_sqm": 85,
+      "environmental_tags": ["premium-location", "mall-nearby", "flood-safe"],
+      "description": "High-end condominium with city view and amenities",
+      "status": "active",
+      "created_at": "2024-01-20"
+    },
+    {
+      "id": "prop-3",
+      "title": "Affordable Townhouse in Matina Crossing",
+      "price": 1800000,
+      "location": {
+        "barangay": "Matina Crossing",
+        "city": "Davao City",
+        "region": "Davao Region"
+      },
+      "agent_id": "agent-1",
+      "property_type": "townhouse",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "area_sqm": 60,
+      "environmental_tags": ["budget-friendly", "near-transport"],
+      "description": "Cozy townhouse perfect for small families",
+      "status": "active",
+      "created_at": "2024-01-18"
+    },
+    {
+      "id": "prop-4",
+      "title": "Executive Village House in Ecoland",
+      "price": 6800000,
+      "location": {
+        "barangay": "Ecoland",
+        "city": "Davao City",
+        "region": "Davao Region"
+      },
+      "agent_id": "agent-3",
+      "property_type": "house",
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "area_sqm": 200,
+      "environmental_tags": ["luxury", "gated-community", "low-crime"],
+      "description": "Spacious executive house in premium subdivision",
+      "status": "active",
+      "created_at": "2024-01-10"
+    },
+    {
+      "id": "prop-5",
+      "title": "Studio Unit in Matina Town Square",
+      "price": 950000,
+      "location": {
+        "barangay": "Matina Aplaya",
+        "city": "Davao City",
+        "region": "Davao Region"
+      },
+      "agent_id": "agent-2",
+      "property_type": "condo",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "area_sqm": 25,
+      "environmental_tags": ["affordable", "near-mall", "good-investment"],
+      "description": "Compact studio perfect for young professionals",
+      "status": "active",
+      "created_at": "2024-01-22"
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent-1",
+      "name": "Kenneth Bulaga",
+      "trust_score": 8.5,
+      "verified": true,
+      "verification_level": "Premium Verified",
+      "contact": "kenneth@trustsearch.ph",
+      "phone": "+63 917 123 4567",
+      "specialties": ["residential", "townhouses", "budget-properties"],
+      "years_experience": 5,
+      "total_listings": 12,
+      "successful_sales": 28,
+      "description": "Experienced agent specializing in affordable residential properties in Davao City"
+    },
+    {
+      "id": "agent-2",
+      "name": "Maria Santos",
+      "trust_score": 9.2,
+      "verified": true,
+      "verification_level": "Premium Verified",
+      "contact": "maria@trustsearch.ph",
+      "phone": "+63 918 234 5678",
+      "specialties": ["condos", "luxury-properties", "investment"],
+      "years_experience": 8,
+      "total_listings": 18,
+      "successful_sales": 45,
+      "description": "Top-rated agent for luxury condos and investment properties"
+    },
+    {
+      "id": "agent-3",
+      "name": "Roberto Cruz",
+      "trust_score": 7.8,
+      "verified": true,
+      "verification_level": "Document Verified",
+      "contact": "roberto@trustsearch.ph",
+      "phone": "+63 919 345 6789",
+      "specialties": ["executive-homes", "gated-communities", "luxury"],
+      "years_experience": 12,
+      "total_listings": 8,
+      "successful_sales": 52,
+      "description": "Veteran agent specializing in executive homes and luxury properties"
+    }
+  ],
+  "locations": [
+    {
+      "barangay": "Matina Aplaya",
+      "city": "Davao City",
+      "region": "Davao Region",
+      "risk_profile": {
+        "crime_rate": "Low",
+        "safety_score": 8,
+        "flood_risk": "Low",
+        "traffic_level": "Moderate",
+        "healthcare_access": "Good",
+        "education_access": "Excellent"
+      },
+      "amenities": ["SM Lanang Premier", "schools", "hospitals", "restaurants"],
+      "average_price_per_sqm": 35000,
+      "description": "Popular residential area with good amenities and accessibility"
+    },
+    {
+      "barangay": "Ecoland",
+      "city": "Davao City",
+      "region": "Davao Region",
+      "risk_profile": {
+        "crime_rate": "Very Low",
+        "safety_score": 9,
+        "flood_risk": "Minimal",
+        "traffic_level": "Light",
+        "healthcare_access": "Excellent",
+        "education_access": "Excellent"
+      },
+      "amenities": ["Abreeza Mall", "premium schools", "medical centers", "golf course"],
+      "average_price_per_sqm": 55000,
+      "description": "Premium location with luxury developments and excellent amenities"
+    },
+    {
+      "barangay": "Matina Crossing",
+      "city": "Davao City",
+      "region": "Davao Region",
+      "risk_profile": {
+        "crime_rate": "Moderate",
+        "safety_score": 7,
+        "flood_risk": "Moderate",
+        "traffic_level": "Heavy",
+        "healthcare_access": "Fair",
+        "education_access": "Good"
+      },
+      "amenities": ["public transport", "local markets", "schools", "clinics"],
+      "average_price_per_sqm": 25000,
+      "description": "Affordable area with good transport links, suitable for budget-conscious buyers"
+    }
+  ],
+  "market_stats": {
+    "total_properties": 5,
+    "total_agents": 3,
+    "verified_agents": 3,
+    "average_trust_score": 8.5,
+    "price_range": {
+      "min": 950000,
+      "max": 6800000,
+      "average": 3450000
+    },
+    "popular_areas": ["Matina Aplaya", "Ecoland", "Matina Crossing"],
+    "last_updated": "2024-01-25"
+  }
+} 
