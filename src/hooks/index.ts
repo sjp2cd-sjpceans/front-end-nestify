@@ -1,3 +1,4 @@
 // Export all custom hooks for cleaner imports
 export { useTopProperties } from './useTopProperties'
-export { usePropertySearch } from './usePropertySearch' 
+export { usePropertySearch } from './usePropertySearch'
+export { useAuth } from './useAuth' 
