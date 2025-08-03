@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { X, Trash2, Send } from 'lucide-react'
+import { Bot, X, Trash2, Send } from 'lucide-react'
 import { useChatbot } from '../../hooks/useChatbot'
 import type { Property } from '../../types'
-import chatbotIcon from '../../assets/images/chatbot/chatbot.png'
 
 interface ChatbotProps {
   property: Property
@@ -58,11 +57,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ property }) => {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <img 
-                  src={chatbotIcon} 
-                  alt="Chatbot" 
-                  className="w-5 h-5 object-contain"
-                />
+                <Bot size={18} />
               </div>
               <div>
                 <h3 className="font-semibold text-sm">Property Assistant</h3>
@@ -91,11 +86,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ property }) => {
           <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
             {messages.length === 0 && (
               <div className="text-center text-gray-500 text-sm py-8">
-                <img 
-                  src={chatbotIcon} 
-                  alt="Chatbot" 
-                  className="w-8 h-8 mx-auto mb-3 opacity-60"
-                />
+                <Bot className="mx-auto mb-3 text-gray-400" size={32} />
                 <p className="font-medium">Hi! I'm your property assistant!</p>
                 <p className="text-xs mt-1">Ask me about this property in {property.location.barangay}</p>
                 <div className="mt-3 text-xs bg-blue-50 text-blue-700 p-2 rounded-lg">
@@ -182,11 +173,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ property }) => {
         onClick={handleToggleChat}
         className="w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group hover:from-blue-700 hover:to-purple-700"
       >
-        <img 
-          src={chatbotIcon} 
-          alt="Chatbot" 
-          className="w-6 h-6 group-hover:scale-110 transition-transform"
-        />
+        <Bot size={24} className="group-hover:scale-110 transition-transform" />
       </button>
     </div>
   )
