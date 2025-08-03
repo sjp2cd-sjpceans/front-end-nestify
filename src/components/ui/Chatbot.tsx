@@ -171,9 +171,9 @@ export const Chatbot: React.FC<ChatbotProps> = ({ property }) => {
       {/* Toggle Button */}
       <button
         onClick={handleToggleChat}
-        className="w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group hover:from-blue-700 hover:to-purple-700"
+        className="w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group hover:bg-blue-700"
       >
-        <Bot size={24} className="group-hover:scale-110 transition-transform" />
+        <Bot size={40} className="w-10 h-10 group-hover:scale-110 transition-transform" />
       </button>
     </div>
   )
