@@ -9,13 +9,31 @@ const RATE_LIMIT_DELAY = 1500 // 1.5 seconds between requests
 const isPremiumQuestion = (message: string): boolean => {
   const lowerMessage = message.toLowerCase()
   const premiumKeywords = [
-    'investment advice', 'roi', 'return on investment', 'market analysis', 'price prediction',
-    'detailed risk', 'crime statistics', 'flood history', 'property value trends',
-    'neighborhood comparison', 'investment potential', 'resale value', 'market forecast',
-    'competitive analysis', 'financial advice', 'mortgage recommendation'
+    // Investment & Financial Analysis (Premium)
+    'investment advice', 'roi', 'return on investment', 'investment potential', 'resale value',
+    'property value trends', 'market forecast', 'price prediction', 'financial advice', 
+    'mortgage recommendation', 'investment analysis', 'profit potential', 'appreciation rate',
+    
+    // Detailed Market Analysis (Premium)
+    'market analysis', 'competitive analysis', 'neighborhood comparison', 'market trends',
+    'property comparison', 'market data', 'price history', 'value analysis',
+    
+    // Detailed Risk Analysis (Premium)
+    'detailed risk', 'crime statistics', 'historical crime', 'flood history', 'detailed flood',
+    'risk analysis', 'environmental impact', 'natural disaster', 'climate risk'
   ]
   
   return premiumKeywords.some(keyword => lowerMessage.includes(keyword))
+}
+
+// Check if it's a basic safety question (FREE)
+const isBasicSafetyQuestion = (message: string): boolean => {
+  const lowerMessage = message.toLowerCase()
+  const basicSafetyKeywords = [
+    'safe', 'safety', 'crime rate', 'security', 'dangerous', 'crime', 'theft', 'robbery'
+  ]
+  
+  return basicSafetyKeywords.some(keyword => lowerMessage.includes(keyword))
 }
 
 export const useChatbot = (property?: Property) => {
@@ -323,6 +341,31 @@ export const useChatbot = (property?: Property) => {
       return response
     }
 
+    // Basic Safety Questions (FREE) - prioritize over general location inquiry
+    if (isBasicSafetyQuestion(message)) {
+      if (currentProperty) {
+        const location = data.locations.find(loc => loc.barangay === currentProperty.location.barangay)
+        if (location) {
+          let response = `🔒 **Safety Information for ${location.barangay}:**\n\n`
+          response += `• **Overall Safety Score:** ${location.risk_profile.safety_score}/10\n`
+          response += `• **Crime Rate:** ${location.risk_profile.crime_rate}\n`
+          response += `• **Flood Risk:** ${location.risk_profile.flood_risk}\n\n`
+          
+          if (location.risk_profile.safety_score >= 8) {
+            response += `✅ This is considered a very safe area with low crime rates.`
+          } else if (location.risk_profile.safety_score >= 6) {
+            response += `⚠️ This area has moderate safety levels. Standard precautions are recommended.`
+          } else {
+            response += `⚠️ This area requires extra caution. Consider security measures.`
+          }
+          
+          response += `\n\n💡 *Want detailed crime statistics and historical trends? Upgrade to TrustSearch Premium for comprehensive risk analysis.*`
+          
+          return response
+        }
+      }
+    }
+
     // Location/area inquiries
     if (context.intent === 'location_inquiry') {
       const location = currentProperty ? 
@@ -332,15 +375,14 @@ export const useChatbot = (property?: Property) => {
       if (location) {
         let response = `📍 **${location.barangay}, ${location.city}** is a great area! Here's what you should know:\n\n`
         response += `🔒 **Safety & Security:**\n`
-        response += `• **Safety Score:** ${location.risk_profile.safety_score}/10\n`
-        response += `• **Crime Rate:** ${location.risk_profile.crime_rate}\n`
-        response += `• **Flood Risk:** ${location.risk_profile.flood_risk}\n\n`
-        response += `🌊 **Environmental Factors:**\n`
-        response += `• **Flood Risk:** ${location.risk_profile.flood_risk}\n`
-        response += `• **Traffic Level:** ${location.risk_profile.traffic_level}\n\n`
+        response += `• Safety score: ${location.risk_profile.safety_score}/10\n`
+        response += `• Crime rate: ${location.risk_profile.crime_rate}\n`
+        response += `• Flood risk: ${location.risk_profile.flood_risk}\n\n`
+        response += `🚗 **Transportation:**\n`
+        response += `• Traffic level: ${location.risk_profile.traffic_level}\n\n`
         response += `🏥 **Accessibility:**\n`
-        response += `• **Healthcare Access:** ${location.risk_profile.healthcare_access}\n`
-        response += `• **Education Access:** ${location.risk_profile.education_access}\n\n`
+        response += `• Healthcare access: ${location.risk_profile.healthcare_access}\n`
+        response += `• Education access: ${location.risk_profile.education_access}\n\n`
         response += `🎯 **Nearby Amenities:** ${location.amenities.join(', ')}\n\n`
         response += `💰 **Average price per sqm:** ₱${location.average_price_per_sqm.toLocaleString()}\n\n`
         response += location.description
@@ -389,7 +431,7 @@ export const useChatbot = (property?: Property) => {
       }
     }
 
-    // Price-related questions
+    // Price-related questions (FREE)
     if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('expensive')) {
       if (currentProperty) {
         const location = data.locations.find(loc => loc.barangay === currentProperty.location.barangay)
@@ -411,34 +453,13 @@ export const useChatbot = (property?: Property) => {
             `📉 This property offers good value compared to the market average.`
         }
         
+        response += `\n\n💡 *Want detailed market analysis and price predictions? Upgrade to TrustSearch Premium for investment insights.*`
+        
         return response
       }
     }
 
-    // Safety-related questions
-    if (lowerMessage.includes('safe') || lowerMessage.includes('security') || lowerMessage.includes('crime')) {
-      if (currentProperty) {
-        const location = data.locations.find(loc => loc.barangay === currentProperty.location.barangay)
-        if (location) {
-          let response = `🔒 **Safety Information for ${location.barangay}:**\n\n`
-          response += `• **Overall Safety Score:** ${location.risk_profile.safety_score}/10\n`
-          response += `• **Crime Rate:** ${location.risk_profile.crime_rate}\n`
-          response += `• **Flood Risk:** ${location.risk_profile.flood_risk}\n\n`
-          
-          if (location.risk_profile.safety_score >= 8) {
-            response += `✅ This is considered a very safe area with low crime rates.`
-          } else if (location.risk_profile.safety_score >= 6) {
-            response += `⚠️ This area has moderate safety levels. Standard precautions are recommended.`
-          } else {
-            response += `⚠️ This area requires extra caution. Consider security measures.`
-          }
-          
-          return response
-        }
-      }
-    }
-
-    // Transportation/accessibility questions
+    // Transportation/accessibility questions (FREE)
     if (lowerMessage.includes('transport') || lowerMessage.includes('traffic') || lowerMessage.includes('commute')) {
       if (currentProperty) {
         const location = data.locations.find(loc => loc.barangay === currentProperty.location.barangay)
@@ -477,4 +498,4 @@ export const useChatbot = (property?: Property) => {
     sendMessage,
     inputRef
   }
-} 
+}
