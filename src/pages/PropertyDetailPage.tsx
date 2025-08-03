@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
 import { PropertyDetail } from '../components/property/PropertyDetail'
+import { Chatbot } from '../components/ui/Chatbot'
 import { useProperty, useIncrementPropertyViews } from '../hooks/useProperty'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Header } from '../components/ui/Header'
@@ -63,6 +64,8 @@ export const PropertyDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <PropertyDetail property={property} />
+      {/* Property-specific Chatbot */}
+      <Chatbot property={property} />
     </div>
   )
 } 
