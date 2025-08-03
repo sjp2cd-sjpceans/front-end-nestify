@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { MapPin, Bed, Bath, Square, Shield, Star, Phone, Heart, Share2, Mail, Calendar, Flag, Waves } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, Shield, Star, Phone, Heart, Share2, Mail, Calendar, Flag, Waves, Home, Building, Car, CalendarCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Property } from '../../types'
 import { usePropertyStats } from '../../hooks/useProperty'
@@ -305,40 +305,64 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property }) => {
             <div className="grid grid-cols-2 gap-6">
               {/* Left Column */}
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Property Type</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Home className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Property Type</span>
+                  </div>
                   <span className="font-medium text-gray-900 capitalize">{property.property_type}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Bedrooms</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Bed className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Bedrooms</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.bedrooms || 'N/A'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Bathrooms</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Bath className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Bathrooms</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.bathrooms || 'N/A'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Floor Area</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Square className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Floor Area</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.floor_area ? `${property.floor_area} sqm` : 'N/A'}</span>
                 </div>
               </div>
               
               {/* Right Column */}
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Floor Level</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Building className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Floor Level</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.floor_number ? `${property.floor_number}th Floor` : 'N/A'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Parking</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Car className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Parking</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.parking_spaces ? `${property.parking_spaces} Slot${property.parking_spaces > 1 ? 's' : ''}` : 'N/A'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Furnishing</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Star className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Furnishing</span>
+                  </div>
                   <span className="font-medium text-gray-900">Semi-Furnished</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Year Built</span>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <CalendarCheck className="h-5 w-5 text-blue-600 mr-3" />
+                    <span className="text-gray-600">Year Built</span>
+                  </div>
                   <span className="font-medium text-gray-900">{property.year_built || 'N/A'}</span>
                 </div>
               </div>
@@ -388,70 +412,6 @@ export const PropertyDetail: React.FC<PropertyDetailProps> = ({ property }) => {
               </div>
             </div>
           </div>
-
-          {/* Property Features */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Property Features</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {property.bedrooms && (
-                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Bed className="h-5 w-5 text-blue-600 mr-3" />
-                  <div>
-                    <div className="font-semibold text-gray-900">{property.bedrooms}</div>
-                    <div className="text-sm text-gray-600">Bedrooms</div>
-                  </div>
-                </div>
-              )}
-              {property.bathrooms && (
-                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Bath className="h-5 w-5 text-blue-600 mr-3" />
-                  <div>
-                    <div className="font-semibold text-gray-900">{property.bathrooms}</div>
-                    <div className="text-sm text-gray-600">Bathrooms</div>
-                  </div>
-                </div>
-              )}
-              {property.floor_area && (
-                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Square className="h-5 w-5 text-blue-600 mr-3" />
-                  <div>
-                    <div className="font-semibold text-gray-900">{property.floor_area}m²</div>
-                    <div className="text-sm text-gray-600">Floor Area</div>
-                  </div>
-                </div>
-              )}
-              {property.lot_area && (
-                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Square className="h-5 w-5 text-blue-600 mr-3" />
-                  <div>
-                    <div className="font-semibold text-gray-900">{property.lot_area}m²</div>
-                    <div className="text-sm text-gray-600">Lot Area</div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Description */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-              <p className="text-gray-700 leading-relaxed">{property.description}</p>
-            </div>
-          </div>
-
-          {/* Amenities */}
-          {property.amenities && property.amenities.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Amenities</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {property.amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center text-gray-700">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                    {amenity}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Sidebar */}
