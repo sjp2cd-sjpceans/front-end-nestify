@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Mail, Lock, User, Loader2, Shield, CheckCircle, Users } from 'lucide-react'
 import { Header } from '../components/ui/Header'
@@ -32,9 +32,26 @@ export const AuthPage: React.FC = () => {
   const [errors, setErrors] = useState<Partial<FormData>>({})
   const [submitError, setSubmitError] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loginSuccess, setLoginSuccess] = useState(false)
   
-  const { signIn, signUp, loading } = useAuth()
+  const { signIn, signUp, loading, profile, isAuthenticated } = useAuth()
   const navigate = useNavigate()
+
+  // Effect to redirect already authenticated users
+  useEffect(() => {
+    if (isAuthenticated && profile && !loginSuccess) {
+      const redirectTo = profile.role === 'buyer' ? '/dashboard' : '/'
+      navigate(redirectTo, { replace: true })
+    }
+  }, [isAuthenticated, profile, navigate, loginSuccess])
+
+  // Effect to handle redirection after successful authentication
+  useEffect(() => {
+    if (loginSuccess && profile) {
+      const redirectTo = profile.role === 'buyer' ? '/dashboard' : '/'
+      navigate(redirectTo)
+    }
+  }, [loginSuccess, profile, navigate])
 
   // Handle input changes
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
@@ -97,7 +114,7 @@ export const AuthPage: React.FC = () => {
         if (error) {
           setSubmitError(error.message || 'Failed to sign in')
         } else {
-          navigate('/')
+          setLoginSuccess(true)
         }
       } else {
         const { error } = await signUp({
@@ -110,7 +127,7 @@ export const AuthPage: React.FC = () => {
         if (error) {
           setSubmitError(error.message || 'Failed to create account')
         } else {
-          navigate('/')
+          setLoginSuccess(true)
         }
       }
     } catch (error) {

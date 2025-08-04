@@ -1,5 +1,5 @@
 import React from 'react'
-import { MapPin, Bed, Bath, Square, Shield, Star, Eye } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, Shield, Eye } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Property } from '../../types'
 
@@ -115,7 +115,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         </div>
 
         {/* Risk Profile */}
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 mb-4">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(property.risk_profile.crime_rate)}`}>
             Crime: {property.risk_profile.crime_rate}
           </span>
@@ -123,48 +123,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             Flood: {property.risk_profile.flood_risk}
           </span>
         </div>
-
-        {/* Agent Info */}
-        {property.agent ? (
-          <div className="pt-3 border-t border-gray-200 mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center">
-                {/* Agent Avatar - Show profile image if available, otherwise show initials */}
-                {property.agent.profile_image ? (
-                  <img
-                    src={property.agent.profile_image}
-                    alt={property.agent.name}
-                    className="w-8 h-8 rounded-full object-cover mr-2"
-                  />
-                ) : (
-                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-2 text-sm font-semibold">
-                    {property.agent.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <div className="text-sm font-medium text-gray-900">{property.agent.name}</div>
-                  <div className="flex items-center">
-                    <Star className="h-3 w-3 text-yellow-400 mr-1" />
-                    <span className="text-xs text-gray-600">{property.agent.average_rating}/5</span>
-                    <span className="text-xs text-gray-400 ml-1">({property.agent.reviews_count} reviews)</span>
-                  </div>
-                </div>
-              </div>
-              <div className={`px-2 py-1 rounded-full text-xs font-semibold ${getTrustScoreColor(property.agent.trust_score)}`}>
-                Agent: {property.agent.trust_score}/10
-              </div>
-            </div>
-            {property.agent.verification_level && (
-              <div className="text-xs text-blue-600 font-medium">
-                {property.agent.verification_level.replace('_', ' ')}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="pt-3 border-t border-gray-200 mb-3">
-            <div className="text-sm text-gray-500 italic">Agent information not available</div>
-          </div>
-        )}
 
         {/* View Details Button */}
         <Link

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Header } from '../components/ui/Header'
+import { DashboardHeader } from '../components/ui/DashboardHeader'
+import { useAuth } from '../hooks/useAuth'
 import { AISearchBar, AdvancedFilters, SearchResults } from '../components/search'
 import type { SearchFilters } from '../types'
 
@@ -9,6 +11,7 @@ export const SearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<SearchFilters>({})
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const { isAuthenticated } = useAuth()
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -68,7 +71,7 @@ export const SearchPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <Header />
+      {isAuthenticated ? <DashboardHeader /> : <Header />}
       
       {/* Hero Section */}
       <section className="bg-white py-16 px-4">

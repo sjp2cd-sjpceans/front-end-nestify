@@ -2,14 +2,17 @@ import React, { useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
 import { PropertyDetail } from '../components/property/PropertyDetail'
 import { Chatbot } from '../components/ui/Chatbot'
-import { useProperty, useIncrementPropertyViews } from '../hooks/useProperty'
-import { Loader2, AlertCircle } from 'lucide-react'
 import { Header } from '../components/ui/Header'
+import { DashboardHeader } from '../components/ui/DashboardHeader'
+import { useProperty, useIncrementPropertyViews } from '../hooks/useProperty'
+import { useAuth } from '../hooks/useAuth'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 export const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const { property, loading, error } = useProperty(id)
   const { incrementViews } = useIncrementPropertyViews()
+  const { isAuthenticated } = useAuth()
 
   // Increment views when property loads
   useEffect(() => {
@@ -21,7 +24,7 @@ export const PropertyDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+        {isAuthenticated ? <DashboardHeader /> : <Header />}
         {/* Loading State */}
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
@@ -36,21 +39,21 @@ export const PropertyDetailPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+        {isAuthenticated ? <DashboardHeader /> : <Header />}
         {/* Error State */}
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center max-w-md mx-auto px-4">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Property Not Found</h2>
-            <p className="text-gray-600 mb-6">{error}</p>
-            <div className="space-y-3">
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Property Not Found</h2>
+            <p className="text-gray-600 mb-6">
+              The property you're looking for doesn't exist or may have been removed.
+            </p>
+            <button 
+              onClick={() => window.history.back()}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Go Back
+            </button>
           </div>
         </div>
       </div>
@@ -63,6 +66,7 @@ export const PropertyDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {isAuthenticated ? <DashboardHeader /> : <Header />}
       <PropertyDetail property={property} />
       {/* Property-specific Chatbot */}
       <Chatbot property={property} />
